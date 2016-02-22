@@ -8,18 +8,46 @@
 
 import UIKit
 
+protocol SelectorDelegate{
+    func optionSelected()
+}
+
 class ViewController: UIViewController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+    @IBOutlet weak var txtFirst: UITextField!
+    @IBOutlet weak var txtSecond: UITextField!
+
+}
+
+extension ViewController : SelectorDelegate{
+    
+    func optionSelected() {
+        self.txtSecond.text = "Value set"
     }
+    
+}
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+extension ViewController : UITextFieldDelegate{
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
-
-
+    
+    func textFieldDidBeginEditing(textField: UITextField) {
+        if txtSecond == textField{
+            self.txtFirst.resignFirstResponder()
+            self.txtSecond.resignFirstResponder()
+            //self.view.endEditing(false)
+            
+            textField.resignFirstResponder()
+            let selectorViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("SecondViewController") as! SecondViewController
+            selectorViewController.delegate = self
+            selectorViewController.modalPresentationStyle = UIModalPresentationStyle.Custom
+            selectorViewController.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
+            self.presentViewController(selectorViewController, animated: true, completion: nil)
+        }
+    }
+    
 }
 
